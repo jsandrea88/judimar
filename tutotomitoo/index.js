@@ -7,7 +7,7 @@ const DATA_FILE = "./extracted_urls.json";
 const OUTPUT_FILE = "./scraped_results.json";
 
 let delayMs = 4000;
-delayMs = delayMs * 5 + Math.floor(Math.random() * 500);
+delayMs = delayMs * 3 + Math.floor(Math.random() * 500);
 // Initial delay: 2s
 let successStreak = 0; // To reduce delay after successful runs
 
@@ -70,13 +70,19 @@ async function scrape() {
       const html = await fetchWithRetry(fullUrl);
       const $ = cheerio.load(html);
 
-      const name = $("body > div.container > section.content-header > h1").text().trim();
-      const subtitle = $("body > div.container > section.content-header > h3").text().trim();
+      const name = $("body > div.container > section.content-header > h1")
+        .text()
+        .trim();
+      const subtitle = $("body > div.container > section.content-header > h3")
+        .text()
+        .trim();
 
       results.push({ url: relativeUrl, name, subtitle });
       console.log(`✅ [${i + 1}/${urls.length}] Processed: ${relativeUrl}`);
     } catch (err) {
-      console.error(`❌ [${i + 1}/${urls.length}] Failed after retries: ${relativeUrl}`);
+      console.error(
+        `❌ [${i + 1}/${urls.length}] Failed after retries: ${relativeUrl}`
+      );
     }
 
     await delay(delayMs);
